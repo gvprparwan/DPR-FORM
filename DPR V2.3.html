@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>DPR Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body style="font-family: sans-serif; padding: 20px; background: #f0f0f0;">
+  <h2>DPR Entry Form</h2>
+  <form id="dprForm" style="background: #fff; padding: 20px; border-radius: 8px;">
+    <label>Date <input name="date" type="date" required></label><br><br>
+    <label>Area / PS <input name="area" required></label><br><br>
+    <label>DIV <input name="div" required></label><br><br>
+    <label>Sub Contractor <input name="subcontractor" required></label><br><br>
+    <label>Description <textarea name="description" required></textarea></label><br><br>
+    <label>Category <input name="category" required></label><br><br>
+    <label>DIA <input name="dia" type="number"></label><br><br>
+    <label>Unit <input name="unit" required></label><br><br>
+    <label>Node From <input name="nodeFrom"></label><br><br>
+    <label>Node To <input name="nodeTo"></label><br><br>
+    <label>CH. From <input name="chFrom"></label><br><br>
+    <label>CH. To <input name="chTo"></label><br><br>
+    <label>Laid Qty <input name="laidQty" type="number" required></label><br><br>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById("dprForm");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      status.innerText = "Submitting...";
+
+      const formData = new FormData(form);
+
+      const scriptURL = "https://script.google.com/macros/s/AKfycbxv6e-nNu5os7JAKyAVFiM3tt0qbz5TMK0ff1cy_aQsVL9F2gVeD-G1bA-p8QWUgPBLbA/exec";
+
+      try {
+        const response = await fetch(scriptURL, {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.text();
+
+        if (result.includes("Success")) {
+          status.innerText = "✅ DPR submitted successfully!";
+          form.reset();
+        } else {
+          status.innerText = "❌ Submission failed: " + result;
+        }
+      } catch (error) {
+        console.error("Error!", error.message);
+        status.innerText = "❌ Network error. Please try again.";
+      }
+    });
+  </script>
+</body>
+</html>
